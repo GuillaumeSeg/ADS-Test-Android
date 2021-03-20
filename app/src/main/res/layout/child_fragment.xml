@@ -10,12 +10,12 @@
         <eu.gsegado.adstest.CustomView
             android:id="@+id/child_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:background="@color/child_fragment_background" />
         <eu.gsegado.adstest.CustomView
             android:id="@+id/final_view_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/view_background"/>
     </LinearLayout>
 </layout>

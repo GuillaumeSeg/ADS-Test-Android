@@ -11,7 +11,13 @@
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_vert"
+                android:id="@+id/guideline_vert_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.33"/>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vert_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -23,8 +29,8 @@
                 android:layout_height="0dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/guideline_vert"
+                app:layout_constraintStart_toEndOf="@id/guideline_vert_1"
+                app:layout_constraintEnd_toStartOf="@id/guideline_vert_2"
                 class = "eu.gsegado.adstest.MotherFragment"/>
             <fragment
                 android:id="@+id/fragment_mother_right"
@@ -32,7 +38,7 @@
                 android:layout_height="0dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/guideline_vert"
+                app:layout_constraintStart_toEndOf="@+id/guideline_vert_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 class = "eu.gsegado.adstest.MotherFragment"/>
 
