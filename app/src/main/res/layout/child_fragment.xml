@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/view_background">
+
+        <eu.gsegado.adstest.CustomView
+            android:id="@+id/child_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/child_fragment_background" />
+        <eu.gsegado.adstest.CustomView
+            android:id="@+id/final_view_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/view_background"/>
+    </LinearLayout>
+</layout>
