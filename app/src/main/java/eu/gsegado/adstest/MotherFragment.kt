@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import eu.gsegado.adstest.databinding.MotherFragmentBinding
 
+// TODO - Height fragment en dur...
 class MotherFragment : Fragment() {
     private lateinit var binding: MotherFragmentBinding
 

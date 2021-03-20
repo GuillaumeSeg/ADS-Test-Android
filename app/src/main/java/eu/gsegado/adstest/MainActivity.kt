@@ -1,61 +1,60 @@
 package eu.gsegado.adstest
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.ArrayAdapter
+import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentActivity
 import eu.gsegado.adstest.databinding.ActivityMainBinding
-import eu.gsegado.adstest.databinding.DrawerHeaderBinding
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.kotlin.subscribeBy
-import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import java.util.Calendar
 
 class MainActivity : FragmentActivity() {
 
+    // TODO - not an Int but a real event ?
     val eventSubject: BehaviorSubject<Int> = BehaviorSubject.create()
 
-    private val items : MutableList<String> = mutableListOf()
-    private val itemsAdapter : ArrayAdapter<String> by lazy { ArrayAdapter<String>(this, R.layout.item_list, items) }
+    private lateinit var binding: ActivityMainBinding
+
+    // Slide for the content of the activity with Drawer opening/closing
+    private val actionBarDrawerToggle: ActionBarDrawerToggle by lazy {
+        object : ActionBarDrawerToggle(this, binding.drawerLayout, 0, 0) {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                super.onDrawerSlide(drawerView, slideOffset)
+
+                var guideLine: Guideline = binding.guidelineVert1
+                var params = guideLine.layoutParams as ConstraintLayout.LayoutParams
+                params.guidePercent = 0.33f*slideOffset
+                guideLine.layoutParams = params
+                // --
+                guideLine = binding.guidelineVert2
+                params = guideLine.layoutParams as ConstraintLayout.LayoutParams
+                params.guidePercent = 0.16f*slideOffset+0.5f
+                guideLine.layoutParams = params
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Inflate binding
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        // Navigation Drawer
-        val navHeaderBinding: DrawerHeaderBinding = DataBindingUtil.inflate(layoutInflater, R.layout.drawer_header, binding.navigationDrawer, true)
-        navHeaderBinding.button.setOnClickListener {
-            eventSubject.onNext(1)
-        }
+        // Size of Navigation Drawer
+        val width = resources.displayMetrics.widthPixels / 3
+        val drawerParams: DrawerLayout.LayoutParams = binding.navigationDrawer.layoutParams as DrawerLayout.LayoutParams
+        drawerParams.width = width
+        binding.navigationDrawer.layoutParams = drawerParams
 
-        // Adapter
-        navHeaderBinding.list.adapter = itemsAdapter
-        navHeaderBinding.list.divider = null
-
-        // Observer
-        // TODO - close clean dispose alert !
-        eventSubject
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(
-                onNext = {
-                    formatTimeCapture()
-                },
-                onError = {
-                    Log.e("MainActivity", "Error while receiving an event")
-                }
-            )
+        binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
     }
 
-    private fun formatTimeCapture() {
-        val time = Calendar.getInstance().timeInMillis
-        items.add("${items.size+1} - $time")
-
-        itemsAdapter.notifyDataSetChanged()
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.drawerLayout.removeDrawerListener(actionBarDrawerToggle)
     }
 
 }
