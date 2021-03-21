@@ -54,7 +54,17 @@ class MainActivity : FragmentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+
         binding.drawerLayout.removeDrawerListener(actionBarDrawerToggle)
+
+        // Clear subscriptions for Drawer
+        binding.navigationDrawer.clear()
+
     }
 
+
+    companion object {
+        const val ITEMS_STATE_KEY = "items"
+        const val SUPERSTATE_KEY = "superState"
+    }
 }

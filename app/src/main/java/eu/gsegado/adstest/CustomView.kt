@@ -10,11 +10,15 @@ import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import eu.gsegado.adstest.databinding.ItemViewBinding
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.Calendar
 
 class CustomView(context: Context, attrs: AttributeSet): ConstraintLayout(context, attrs) {
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     private var binding: ItemViewBinding
 
     private var items : MutableList<String> = mutableListOf()
@@ -35,7 +39,6 @@ class CustomView(context: Context, attrs: AttributeSet): ConstraintLayout(contex
         }
 
         // Observer
-        // TODO - close clean dispose alert !
         (context as MainActivity).eventSubject
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -46,28 +49,30 @@ class CustomView(context: Context, attrs: AttributeSet): ConstraintLayout(contex
                 onError = {
                     Log.e("FragmentMother", "Error while receiving an event")
                 }
-            )
+            ).addTo(compositeDisposable)
     }
 
     override fun onSaveInstanceState(): Parcelable {
-        // TODO - add Key const static bla
         val bundle = Bundle()
-        bundle.putStringArrayList("items", ArrayList(items))
-        bundle.putParcelable("superState", super.onSaveInstanceState())
+        bundle.putStringArrayList(MainActivity.ITEMS_STATE_KEY, ArrayList(items))
+        bundle.putParcelable(MainActivity.SUPERSTATE_KEY, super.onSaveInstanceState())
         return bundle
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        // TODO - add Key const static bla
         var viewState = state
         if (viewState is Bundle) {
-            viewState.getStringArrayList("items")?.let {
+            viewState.getStringArrayList(MainActivity.ITEMS_STATE_KEY)?.let {
                 items.addAll(it.toMutableList())
                 itemsAdapter.notifyDataSetChanged()
             }
-            viewState = viewState.getParcelable("superState")
+            viewState = viewState.getParcelable(MainActivity.SUPERSTATE_KEY)
         }
         super.onRestoreInstanceState(viewState)
+    }
+
+    fun clear() {
+        compositeDisposable.clear()
     }
 
     private fun formatTimeCapture() {

@@ -8,7 +8,7 @@
         <eu.gsegado.adstest.CustomView
             android:id="@+id/mother_content"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/content_height"
             android:background="@color/mother_fragment_background"/>
         <fragment
             android:id="@+id/fragment_child"

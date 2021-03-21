@@ -16,4 +16,12 @@ class ChildFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        // Clear subscriptions for the content views
+        binding.childContent.clear()
+        binding.finalViewContent.clear()
+
+        super.onDestroyView()
+    }
+
 }

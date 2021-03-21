@@ -10,7 +10,7 @@
         <eu.gsegado.adstest.CustomView
             android:id="@+id/child_content"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/content_height"
             android:background="@color/child_fragment_background" />
         <eu.gsegado.adstest.CustomView
             android:id="@+id/final_view_content"
