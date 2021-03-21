@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import com.google.android.material.navigation.NavigationView
 import eu.gsegado.adstest.databinding.DrawerHeaderBinding
+import eu.gsegado.adstest.utils.Constants
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
@@ -25,17 +26,18 @@ class Drawer(context: Context, attrs: AttributeSet): NavigationView(context, att
     private lateinit var itemsAdapter: ArrayAdapter<String>
 
     init {
+        // Inflate binding
         val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         binding = DrawerHeaderBinding.inflate(inflater, this, true)
 
-        val mainActivity: MainActivity = context as MainActivity
-        binding.button.setOnClickListener {
-            mainActivity.eventSubject.onNext(1)
-        }
+        initAdapter()
 
-        itemsAdapter =  ArrayAdapter<String>(binding.root.context, R.layout.item_list, items)
-        binding.list.adapter = itemsAdapter
-        binding.list.divider = null
+        val mainActivity: MainActivity = context as MainActivity
+
+        // Send the event when tapping the FAB
+        binding.button.setOnClickListener {
+            mainActivity.eventSubject.onNext(Constants.EVENT)
+        }
 
         // Observer
         mainActivity.eventSubject
@@ -51,33 +53,46 @@ class Drawer(context: Context, attrs: AttributeSet): NavigationView(context, att
                 ).addTo(compositeDisposable)
     }
 
+    // Save the state of the screen, especially the items in the list if the user flips the
+    // phone screen and destroys the activity.
     override fun onSaveInstanceState(): Parcelable {
         val bundle = Bundle()
-        bundle.putStringArrayList(MainActivity.ITEMS_STATE_KEY, ArrayList(items))
-        bundle.putParcelable(MainActivity.SUPERSTATE_KEY, super.onSaveInstanceState())
+        bundle.putStringArrayList(Constants.ITEMS_STATE_KEY, ArrayList(items))
+        bundle.putParcelable(Constants.SUPERSTATE_KEY, super.onSaveInstanceState())
         return bundle
     }
 
+    // Restore the items of the lists
     override fun onRestoreInstanceState(state: Parcelable?) {
         var viewState = state
         if (viewState is Bundle) {
-            viewState.getStringArrayList(MainActivity.ITEMS_STATE_KEY)?.let {
+            viewState.getStringArrayList(Constants.ITEMS_STATE_KEY)?.let {
                 items.addAll(it.toMutableList())
                 itemsAdapter.notifyDataSetChanged()
             }
-            viewState = viewState.getParcelable(MainActivity.SUPERSTATE_KEY)
+            viewState = viewState.getParcelable(Constants.SUPERSTATE_KEY)
         }
         super.onRestoreInstanceState(viewState)
     }
 
+    /// - PUBLIC METHODS
+
     fun clear() {
         compositeDisposable.clear()
     }
+
+    /// - PRIVATE METHODS
 
     private fun formatTimeCapture() {
         val time = Calendar.getInstance().timeInMillis
         items.add("${items.size + 1} - $time")
 
         itemsAdapter.notifyDataSetChanged()
+    }
+
+    private fun initAdapter() {
+        itemsAdapter =  ArrayAdapter<String>(binding.root.context, R.layout.item_list, items)
+        binding.list.adapter = itemsAdapter
+        binding.list.divider = null
     }
 }

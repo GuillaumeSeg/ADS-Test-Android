@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import eu.gsegado.adstest.databinding.ItemViewBinding
+import eu.gsegado.adstest.utils.Constants
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
@@ -32,10 +33,10 @@ class CustomView(context: Context, attrs: AttributeSet): ConstraintLayout(contex
         binding.list.adapter = itemsAdapter
         binding.list.divider = null
 
+        // Send the event when tapping the FAB
         binding.button.setOnClickListener {
             val mainActivity: MainActivity = context as MainActivity
-
-            mainActivity.eventSubject.onNext(2)
+            mainActivity.eventSubject.onNext(Constants.EVENT)
         }
 
         // Observer
@@ -47,26 +48,29 @@ class CustomView(context: Context, attrs: AttributeSet): ConstraintLayout(contex
                     formatTimeCapture()
                 },
                 onError = {
-                    Log.e("FragmentMother", "Error while receiving an event")
+                    Log.e(CustomView::class.simpleName, "Error while receiving an event")
                 }
             ).addTo(compositeDisposable)
     }
 
+    // Save the state of the screen, especially the items in the list if the user flips the
+    // phone screen and destroys the activity.
     override fun onSaveInstanceState(): Parcelable {
         val bundle = Bundle()
-        bundle.putStringArrayList(MainActivity.ITEMS_STATE_KEY, ArrayList(items))
-        bundle.putParcelable(MainActivity.SUPERSTATE_KEY, super.onSaveInstanceState())
+        bundle.putStringArrayList(Constants.ITEMS_STATE_KEY, ArrayList(items))
+        bundle.putParcelable(Constants.SUPERSTATE_KEY, super.onSaveInstanceState())
         return bundle
     }
 
+    // Restore the items of the lists
     override fun onRestoreInstanceState(state: Parcelable?) {
         var viewState = state
         if (viewState is Bundle) {
-            viewState.getStringArrayList(MainActivity.ITEMS_STATE_KEY)?.let {
+            viewState.getStringArrayList(Constants.ITEMS_STATE_KEY)?.let {
                 items.addAll(it.toMutableList())
                 itemsAdapter.notifyDataSetChanged()
             }
-            viewState = viewState.getParcelable(MainActivity.SUPERSTATE_KEY)
+            viewState = viewState.getParcelable(Constants.SUPERSTATE_KEY)
         }
         super.onRestoreInstanceState(viewState)
     }

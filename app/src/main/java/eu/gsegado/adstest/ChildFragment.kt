@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import eu.gsegado.adstest.databinding.ChildFragmentBinding
 
+/**
+ *  ChildFragment, contains 2 buttons, 2 lists (1 orange / 1 blue)
+ */
 class ChildFragment : Fragment() {
     private lateinit var binding: ChildFragmentBinding
 

@@ -13,6 +13,4 @@
     <color name="child_fragment_background">@android:color/holo_orange_dark</color>
     <color name="view_background">@android:color/holo_blue_dark</color>
 
-
-
 </resources>

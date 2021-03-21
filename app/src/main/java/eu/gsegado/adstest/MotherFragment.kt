@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import eu.gsegado.adstest.databinding.MotherFragmentBinding
 
+/**
+ *  MotherFragment, contains a button, a list (purple) and a Child fragment
+ */
 class MotherFragment : Fragment() {
     private lateinit var binding: MotherFragmentBinding
 
