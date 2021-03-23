@@ -52,8 +52,7 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             android:layout_gravity="start"
-            android:background="@color/drawer_header_background"
-            app:headerLayout="@layout/drawer_header"/>
+            android:background="@color/drawer_header_background" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

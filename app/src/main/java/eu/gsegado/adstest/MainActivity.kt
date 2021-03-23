@@ -16,11 +16,11 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
  */
 class MainActivity : FragmentActivity() {
 
-    val eventSubject: BehaviorSubject<Int> = BehaviorSubject.create()
+    val eventSubject: BehaviorSubject<Unit> = BehaviorSubject.create()
 
     private lateinit var binding: ActivityMainBinding
 
-    // listener used to move the content of the activity with Drawer opening/closing
+    // listener used to move the content in the activity with Drawer opening/closing
     private val actionBarDrawerToggle: ActionBarDrawerToggle by lazy {
         object : ActionBarDrawerToggle(this, binding.drawerLayout, 0, 0) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {

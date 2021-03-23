@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import eu.gsegado.adstest.databinding.ItemViewBinding
 import eu.gsegado.adstest.utils.Constants
+import eu.gsegado.adstest.utils.EspressoIdlingResource
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
@@ -17,13 +18,20 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.Calendar
 
-class CustomView(context: Context, attrs: AttributeSet): ConstraintLayout(context, attrs) {
+/**
+ * Custom view with a button and a list
+ */
+class CustomView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : ConstraintLayout(context, attrs, defStyleAttr) {
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private var binding: ItemViewBinding
 
     private var items : MutableList<String> = mutableListOf()
-    private lateinit var itemsAdapter: ArrayAdapter<String>
+    private var itemsAdapter: ArrayAdapter<String>
 
     init {
         val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -36,7 +44,10 @@ class CustomView(context: Context, attrs: AttributeSet): ConstraintLayout(contex
         // Send the event when tapping the FAB
         binding.button.setOnClickListener {
             val mainActivity: MainActivity = context as MainActivity
-            mainActivity.eventSubject.onNext(Constants.EVENT)
+            mainActivity.eventSubject.onNext(Unit)
+
+            // only used for the tests
+            EspressoIdlingResource.increment()
         }
 
         // Observer
@@ -75,14 +86,20 @@ class CustomView(context: Context, attrs: AttributeSet): ConstraintLayout(contex
         super.onRestoreInstanceState(viewState)
     }
 
+    /// - PUBLIC METHODS
+
     fun clear() {
         compositeDisposable.clear()
     }
+
+    /// - PRIVATE METHODS
 
     private fun formatTimeCapture() {
         val time = Calendar.getInstance().timeInMillis
         items.add("${items.size+1} - $time")
 
         itemsAdapter.notifyDataSetChanged()
+        // only used for the tests
+        EspressoIdlingResource.decrement()
     }
 }

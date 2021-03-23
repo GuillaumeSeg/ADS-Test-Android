@@ -17,7 +17,14 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.Calendar
 
-class Drawer(context: Context, attrs: AttributeSet): NavigationView(context, attrs) {
+/**
+ * The navigation drawer, it contains a list and a button, it slides to 1/3 of the screen
+ */
+class Drawer @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : NavigationView(context, attrs, defStyleAttr) {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private var binding: DrawerHeaderBinding
@@ -33,10 +40,9 @@ class Drawer(context: Context, attrs: AttributeSet): NavigationView(context, att
         initAdapter()
 
         val mainActivity: MainActivity = context as MainActivity
-
         // Send the event when tapping the FAB
-        binding.button.setOnClickListener {
-            mainActivity.eventSubject.onNext(Constants.EVENT)
+        binding.buttonDrawer.setOnClickListener {
+            mainActivity.eventSubject.onNext(Unit)
         }
 
         // Observer
